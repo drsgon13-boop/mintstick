@@ -1,7 +1,7 @@
 [Nemo Action]
 Active=true
 Exec=mint-iso-verify %F
-Icon-Name=application-certificate-symbolic
+Icon-Name=xapp-certificate-symbolic
 Selection=S
 Extensions=iso;img;
 Name=Verify
