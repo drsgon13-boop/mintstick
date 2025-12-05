@@ -313,10 +313,22 @@ class MintStick:
         else:
             self.go_button.set_sensitive(False)
 
+    def confirm_action(self, title, question):
+        dialog = Gtk.MessageDialog(parent=self.window,
+                               flags=Gtk.DialogFlags.MODAL | Gtk.DialogFlags.DESTROY_WITH_PARENT,
+                               type=Gtk.MessageType.QUESTION,
+                               buttons=Gtk.ButtonsType.YES_NO,
+                               message_format=f"{title}\n\n{question}")
+
+        response = dialog.run()
+        dialog.destroy()
+        return response == Gtk.ResponseType.YES
 
     def do_format(self, widget):
         if self.debug:
             print("DEBUG: Format %s as %s" % (self.dev, self.filesystem))
+            return
+        if not self.confirm_action(_("Confirm formatting"), _("Do you really want to format the device?")):
             return
         self.udisks_client.handler_block(self.udisk_listener_id)
         self.devicelist.set_sensitive(False)
@@ -379,7 +391,8 @@ class MintStick:
         if self.debug:
             print("DEBUG: Write %s to %s" % (self.chooser.get_filename(), self.dev))
             return
-
+        if not self.confirm_action(_("Confirm ISO-writing"), _("Do you really want to write the ISO to the device?")):
+            return
         source = self.chooser.get_filename()
         target = self.dev
         filename = os.path.basename(source).lower()
